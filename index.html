@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Tasks</h2>
+    <ul>
+        {% for task in tasks %}
+            <li>
+                {{ task }}
+                <a href="{{ url_for('delete', index=loop.index0) }}">DELETE</a>
+            </li>
+        {% else %}
+            <p>No tasks yet.</p>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}
