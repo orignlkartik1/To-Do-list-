@@ -1,27 +1,33 @@
-from flask import Flask, request, jsonify
+from flask import Flask, render_template, request, redirect, url_for
+from wtforms import Form, StringField, SubmitField
+from wtforms.validators import DataRequired
 
 app = Flask(__name__)
 
-tasks = []
+todo_list = []
 
-@app.route('/', methods=['GET'])
-def get_tasks():
-    return jsonify({'tasks': tasks})
+class TaskForm(Form):
+    task = StringField('Task', validators=[DataRequired()])
+    submit = SubmitField('Add Task')
 
-@app.route('/add', methods=['GET'])
-def add_task():
-    task = request.args.get('task')
-    if task:
-        tasks.append(task)
-        return jsonify({'message': f'Task "{task}" added successfully!', 'tasks': tasks}), 201
-    return jsonify({'error': 'Task content is required'}), 400
+@app.route('/')
+def index():
+    return render_template('index.html', tasks=todo_list)
 
-@app.route('/delete/<int:task_id>')
-def delete_task(task_id):
-    if 0 <= task_id < len(tasks):
-        deleted_task = tasks.pop(task_id)
-        return jsonify({'message': f'Task "{deleted_task}" deleted successfully!', 'tasks': tasks}), 200
-    return jsonify({'error': 'Invalid task ID'}), 404
+@app.route('/add', methods=['GET', 'POST'])
+def add():
+    form = TaskForm(request.form)
+    if request.method == 'POST' and form.validate():
+        todo_list.append(form.task.data)
+        return redirect(url_for('index'))
+    return render_template('add.html', form=form)
+
+@app.route('/delete/<int:index>')
+def delete(index):
+    if 0 <= index < len(todo_list):
+        todo_list.pop(index)
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(debug=True)
+
