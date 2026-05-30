@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h2>Add a Task</h2>
+    <form method="POST">
+        {{ form.task.label }}
+        {{ form.task(size=40) }}
+        {% for error in form.task.errors %}
+            <div class="error">{{ error }}</div>
+        {% endfor %}
+        <br>
+        {{ form.submit() }}
+    </form>
+</div>
+{% endblock %}
