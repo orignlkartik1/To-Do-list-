@@ -2,10 +2,8 @@ from flask import Flask, request, jsonify
 
 app = Flask(__name__)
 
-# In-memory task storage
 tasks = []
 
-# Get all tasks
 @app.route('/', methods=['GET'])
 def get_tasks():
     return jsonify({'tasks': tasks})
@@ -18,7 +16,6 @@ def add_task():
         return jsonify({'message': f'Task "{task}" added successfully!', 'tasks': tasks}), 201
     return jsonify({'error': 'Task content is required'}), 400
 
-# Delete task by index
 @app.route('/delete/<int:task_id>')
 def delete_task(task_id):
     if 0 <= task_id < len(tasks):
